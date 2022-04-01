@@ -3,6 +3,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import Character from "../models/character";
+import { getSingleCharacter } from "../lib/api";
 
 const DetailTitle = styled.p`
   font-weight: bold;
@@ -13,44 +14,27 @@ const CharacterDetails: React.FC = () => {
   const [isLoading, setIsloading] = useState(false);
   const params = useParams<{ characterId: string }>();
 
-  //fetch the data of a single character
-  const getSingleCharacter = useCallback(async () => {
+  const loadCharacter = useCallback(async () => {
     setIsloading(true);
     try {
-      const response = await fetch(
-        `https://rickandmortyapi.com/api/character/${params.characterId}`
-      );
-      if (!response.ok) {
-        throw new Error("cannot fetch single character");
-      }
-      const data = await response.json();
-      const characterDetails = new Character(
-        data.id,
-        data.name,
-        data.image,
-        data.status,
-        data.species,
-        data.gender,
-        data.origin.name,
-        data.location.name,
-        data.episode.length
-      );
-      setCharacter(characterDetails);
+      const response = await getSingleCharacter(params.characterId);
+      setCharacter(response);
     } catch (err) {
       alert(err);
+    } finally {
+      setIsloading(false);
     }
-    setIsloading(false);
-  }, [params.characterId]);
+  }, []);
 
   useEffect(() => {
-    getSingleCharacter();
-  }, [getSingleCharacter]);
+    loadCharacter();
+  }, [loadCharacter]);
 
   if (isLoading) {
     return <p>Loading...</p>;
   }
 
-  if (!character?.name && !isLoading) {
+  if (!character?.name) {
     return <p>{`Character with this ID not found.`}</p>;
   }
 

@@ -4,6 +4,7 @@ import CharacterBox from "../components/CharacterBox";
 import ListWrapper from "../components/ListWrapper";
 import Paginate from "../util/Paginate";
 import { useHistory, useParams } from "react-router-dom";
+import { getAllCharacter } from "../lib/api";
 
 const CharacterList: React.FC = () => {
   const history = useHistory();
@@ -13,38 +14,27 @@ const CharacterList: React.FC = () => {
   const [characters, setCharacter] = useState<BoxItem[]>([]);
   const [currentPage, setCurrentPage] = useState(numberpage);
   const [picPerPage] = useState(6);
+  const [isLoading, setIsloading] = useState(false);
 
-  // fetching all the characters by UseEffect in CharacterList.tsx.
-  // Notes:
-  // This app is using 2 fetch calls as a result I put them here dierctly in the component.
-  // If there were more calls, better to use a custom hook not to have too many code repetition
-  // and move the getAllCharacter and getSingleCharacter funtions to a separate file/folder to ake the code shorter here
-
-  const getAllCharacter = useCallback(async () => {
+  const loadCharacters = useCallback(async () => {
+    setIsloading(true);
     try {
-      const response = await fetch("https://rickandmortyapi.com/api/character");
-      if (!response.ok) {
-        throw new Error("cannot fetch characters");
-      }
-      const data = await response.json();
-      const shortenedData: BoxItem[] = data.results.map(
-        (item: any) => new BoxItem(item.id, item.name, item.image)
-      );
-      setCharacter(shortenedData);
+      const response = await getAllCharacter();
+      setCharacter(response);
     } catch (err) {
       alert(err);
+    } finally {
+      setIsloading(false);
     }
   }, []);
 
   useEffect(() => {
-    //history.replace(`/items/${currentPage}`);
-    getAllCharacter();
-  }, [getAllCharacter]);
+    loadCharacters();
+  }, [loadCharacters]);
 
   //pagination, navigate between the pages
   useEffect(() => {
     setCurrentPage(numberpage);
-    // NEW PART:
     if (
       characters.length > 0 &&
       picPerPage &&
@@ -63,6 +53,9 @@ const CharacterList: React.FC = () => {
     history.push(`/characters/${pageNumber}`);
   };
 
+  if (isLoading) {
+    return <p>Loading...</p>;
+  }
   return (
     <React.Fragment>
       <ListWrapper>
