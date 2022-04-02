@@ -1,5 +1,15 @@
 import { Link } from "react-router-dom";
-import StyledCharacterBox from "./StyledCharacterBox";
+import styled from "styled-components";
+import Card from "../util/Card";
+
+const StyledCharacterBox = styled(Card)`
+  transition: 0.5s;
+  cursor: pointer;
+
+  &:hover {
+    transform: scale(1.05);
+  }
+`;
 
 const CharacterBox: React.FC<{ id: number; name: string; picture: string }> = (
   props
@@ -7,7 +17,7 @@ const CharacterBox: React.FC<{ id: number; name: string; picture: string }> = (
   return (
     <StyledCharacterBox>
       <Link to={`/details/${props.id}`}>
-        <img alt="character" src={props.picture} />
+        <img alt={props.name} src={props.picture} />
         <h2>{props.name}</h2>
       </Link>
     </StyledCharacterBox>

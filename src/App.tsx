@@ -1,6 +1,6 @@
 import "./App.css";
 import TitleImage from "./components/TitleImage";
-import CharacterList from "./pages/CharacterList";
+import Characters from "./pages/Characters";
 import { Switch, Route, Redirect } from "react-router-dom";
 import CharacterDetails from "./pages/CharacterDetails";
 import NotFound from "./pages/NotFound";
@@ -22,7 +22,7 @@ const App = () => {
           <Redirect to="/characters/1" />
         </Route>
         <Route path="/characters/:page">
-          <CharacterList />
+          <Characters />
         </Route>
         <Route path="/details/:characterId">
           <CharacterDetails />

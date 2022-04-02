@@ -3,7 +3,7 @@ import {
   screen,
   waitForElementToBeRemoved,
 } from "@testing-library/react";
-import CharacterList from "../pages/CharacterList";
+import Characters from "../pages/Characters";
 import { createMemoryHistory } from "history";
 import { Router } from "react-router-dom";
 import { setupServer } from "msw/node";
@@ -59,7 +59,7 @@ describe("Character list", () => {
     const history = createMemoryHistory();
     render(
       <Router history={history}>
-        <CharacterList />
+        <Characters />
       </Router>
     );
     await waitForElementToBeRemoved(() => screen.getByText(/Loading.../i));
@@ -72,5 +72,27 @@ describe("Character list", () => {
     const name = screen.getByText(/Rick Sanchez/);
     expect(name).toBeInTheDocument();
   });
-  it.todo("cannot fetch message")
+
+
+  it("if Character Id not found show not found text", async () => {
+      server.use(
+        rest.get(`${process.env.REACT_APP_URL}`, (req, res, ctx) => {
+          return res.once(
+            ctx.status(404),
+            ctx.json({ message: "Error: cannot fetch characters" })
+          );
+        })
+      );
+      const history = createMemoryHistory();
+      render(
+        <Router history={history}>
+          <Characters />
+        </Router>
+      );
+      await waitForElementToBeRemoved(() => screen.getByText(/Loading.../i));
+      const text = await screen.findByText("cannot fetch characters", {
+        exact: false,
+      });
+      expect(text).toBeInTheDocument();
+    });
 });

@@ -1,40 +1,33 @@
 import ProfileWrapper from "../components/ProfileWrapper";
-import { useState, useEffect, useCallback } from "react";
+import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
-import Character from "../models/character";
 import { getSingleCharacter } from "../lib/api";
+import useHttp from "../hooks/use-http";
 
 const DetailTitle = styled.p`
   font-weight: bold;
 `;
 
 const CharacterDetails: React.FC = () => {
-  const [character, setCharacter] = useState<Character>();
-  const [isLoading, setIsloading] = useState(false);
+  const {
+    sendRequest,
+    data: character,
+    status,
+    error,
+  } = useHttp(getSingleCharacter, true);
   const params = useParams<{ characterId: string }>();
-
-  const loadCharacter = useCallback(async () => {
-    setIsloading(true);
-    try {
-      const response = await getSingleCharacter(params.characterId);
-      setCharacter(response);
-    } catch (err) {
-      alert(err);
-    } finally {
-      setIsloading(false);
-    }
-  }, []);
+  const { characterId } = params;
 
   useEffect(() => {
-    loadCharacter();
-  }, [loadCharacter]);
+    sendRequest(characterId);
+  }, [sendRequest, characterId]);
 
-  if (isLoading) {
+  if (status === "pending") {
     return <p>Loading...</p>;
   }
 
-  if (!character?.name) {
+  if (error) {
     return <p>{`Character with this ID not found.`}</p>;
   }
 
