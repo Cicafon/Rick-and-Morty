@@ -6,6 +6,7 @@ import Paginate from "../util/Paginate";
 import { useHistory, useParams } from "react-router-dom";
 import { getAllCharacter } from "../lib/api";
 import useHttp from "../hooks/use-http";
+import LoadingSpinner from "../util/LoadingSpinner";
 
 const CharacterList: React.FC = () => {
   const history = useHistory();
@@ -50,7 +51,7 @@ const CharacterList: React.FC = () => {
   };
 
   if (status === "pending") {
-    return <p>Loading...</p>;
+    return <LoadingSpinner />;
   }
 
   if (error) {

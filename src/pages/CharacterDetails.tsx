@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import { getSingleCharacter } from "../lib/api";
 import useHttp from "../hooks/use-http";
+import LoadingSpinner from "../util/LoadingSpinner";
 
 const DetailTitle = styled.p`
   font-weight: bold;
@@ -24,7 +25,7 @@ const CharacterDetails: React.FC = () => {
   }, [sendRequest, characterId]);
 
   if (status === "pending") {
-    return <p>Loading...</p>;
+    return <LoadingSpinner />;
   }
 
   if (error) {

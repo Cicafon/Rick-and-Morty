@@ -59,7 +59,7 @@ describe("Character Details Component", () => {
           <CharacterDetails />
         </Router>
       );
-      await waitForElementToBeRemoved(() => screen.getByText(/Loading.../i));
+      await waitForElementToBeRemoved(() => screen.getByLabelText(/loading/i));
     });
     it("renders image", () => {
       const image = screen.getByRole("img");
@@ -111,7 +111,7 @@ describe("Character Details Component", () => {
           <CharacterDetails />
         </Router>
       );
-      await waitForElementToBeRemoved(() => screen.getByText(/Loading.../i));
+      await waitForElementToBeRemoved(() => screen.getByLabelText(/loading/i));
       const text = await screen.findByText("Character with this ID not found", {
         exact: false,
       });

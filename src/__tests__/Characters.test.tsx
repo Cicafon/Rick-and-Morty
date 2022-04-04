@@ -62,7 +62,7 @@ describe("Character list", () => {
         <Characters />
       </Router>
     );
-    await waitForElementToBeRemoved(() => screen.getByText(/Loading.../i));
+    await waitForElementToBeRemoved(() => screen.getByLabelText(/loading/i));
   });
   it("Show pagination first page", () => {
     const pageNumber = screen.getByText("1");
@@ -89,7 +89,7 @@ describe("Character list", () => {
           <Characters />
         </Router>
       );
-      await waitForElementToBeRemoved(() => screen.getByText(/Loading.../i));
+      await waitForElementToBeRemoved(() => screen.getByLabelText(/loading/i));
       const text = await screen.findByText("cannot fetch characters", {
         exact: false,
       });
